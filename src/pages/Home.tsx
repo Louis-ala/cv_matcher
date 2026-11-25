@@ -43,7 +43,7 @@ export default function Home() {
           <div className="hero__text">
             <h1>Votre CV. De vraies offres. Une candidature prête pour chacune.</h1>
             <p className="lede">
-              Déposez votre CV en PDF : l'app cherche sur Indeed et Welcome to the Jungle, note chaque offre sur 20,
+              Déposez votre CV en PDF : l'app cherche sur Indeed, Welcome to the Jungle et LinkedIn, note chaque offre sur 20,
               puis rédige la lettre de motivation adaptée à l'entreprise et prépare vos réponses d'entretien. Chaque
               phrase indique en marge d'où elle vient de votre CV.
             </p>

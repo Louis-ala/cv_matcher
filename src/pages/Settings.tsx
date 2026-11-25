@@ -147,7 +147,7 @@ export default function SettingsPage() {
         note={
           <>
             <span className={`hand ${apifyReady ? "" : "hand--red"}`}>{apifyReady ? "Prêt" : "À faire"}</span>
-            <span className="note-small">Va chercher les offres sur Indeed et Welcome to the Jungle.</span>
+            <span className="note-small">Va chercher les offres sur Indeed, Welcome to the Jungle et LinkedIn.</span>
           </>
         }
       >
@@ -175,8 +175,9 @@ export default function SettingsPage() {
           </div>
           <CheckLine check={apifyCheck} />
           <p className="hint">
-            Actors utilisés : <a className="link" href={ACTORS.indeed.store} target="_blank" rel="noreferrer">{ACTORS.indeed.actor}</a> et{" "}
-            <a className="link" href={ACTORS.wttj.store} target="_blank" rel="noreferrer">{ACTORS.wttj.actor}</a>. Une recherche de 15 offres coûte en général moins de 0,10 $.
+            Actors utilisés : <a className="link" href={ACTORS.indeed.store} target="_blank" rel="noreferrer">{ACTORS.indeed.actor}</a>,{" "}
+            <a className="link" href={ACTORS.wttj.store} target="_blank" rel="noreferrer">{ACTORS.wttj.actor}</a> et{" "}
+            <a className="link" href={ACTORS.linkedin.store} target="_blank" rel="noreferrer">{ACTORS.linkedin.actor}</a>. Une recherche de 15 offres coûte en général moins de 0,10 $.
           </p>
         </section>
       </Row>

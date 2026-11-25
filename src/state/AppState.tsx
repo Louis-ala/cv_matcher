@@ -85,7 +85,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         criteria: {
           query: profile.requetes[0] ?? profile.titre,
           location: profile.localisation,
-          sources: { indeed: true, wttj: true },
+          sources: { indeed: true, wttj: true, linkedin: true },
           limit: d.criteria?.limit ?? 15,
           datePosted: d.criteria?.datePosted ?? "14",
         },
@@ -137,7 +137,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setJob("search", {
         phase: "running",
         label: "Recherche des offres…",
-        detail: `Apify interroge ${sources.map((k) => ACTORS[k].label).join(" et ")}. Comptez 10 à 60 secondes.`,
+        detail: `Apify interroge ${sources.map((k) => ACTORS[k].label).join(", ").replace(/, ([^,]*)$/, " et $1")}. Comptez 10 à 60 secondes.`,
       });
       try {
         const settled = await Promise.allSettled(sources.map((src) => searchSource(src, criteria, s.apifyToken, s.apifyMaxUsd)));

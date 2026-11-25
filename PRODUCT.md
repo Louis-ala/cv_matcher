@@ -16,7 +16,7 @@ Usage personnel : une seule personne francophone qui cherche un emploi en France
 
 ## Product Purpose
 
-Transformer un CV PDF en candidatures prêtes : extraction du profil, recherche d'offres réelles (Indeed et Welcome to the Jungle via Apify), score d'adéquation par offre, lettre de motivation adaptée à l'entreprise, lien direct pour postuler, et réponses préparées aux questions d'entretien probables, toutes fondées sur le CV. Succès : passer du PDF à une candidature envoyable en quelques minutes.
+Transformer un CV PDF en candidatures prêtes : extraction du profil, recherche d'offres réelles (Indeed, Welcome to the Jungle et LinkedIn via Apify), score d'adéquation par offre, lettre de motivation adaptée à l'entreprise, lien direct pour postuler, et réponses préparées aux questions d'entretien probables, toutes fondées sur le CV. Succès : passer du PDF à une candidature envoyable en quelques minutes.
 
 ## Positioning
 
@@ -25,7 +25,7 @@ Tout part du CV réel de l'utilisateur et de vraies offres scrapées ; chaque le
 ## Operating Context
 
 - L'utilisateur fournit lui-même ses identifiants : une clé API d'un fournisseur d'IA majeur (Anthropic, OpenAI, Google Gemini, Mistral) et un token Apify. Ils restent dans son navigateur.
-- Sources d'offres : Indeed (actor `valig/indeed-jobs-scraper`) et Welcome to the Jungle (actor `clearpath/welcome-to-the-jungle-jobs-api`).
+- Sources d'offres : Indeed (actor `valig/indeed-jobs-scraper`), Welcome to the Jungle (actor `clearpath/welcome-to-the-jungle-jobs-api`) et LinkedIn (actor `valig/linkedin-jobs-scraper`).
 - Parcours : Réglages → CV → Recherche → Offres → Dossier d'une offre (lettre, postuler, entretien).
 
 ## Capabilities and Constraints

@@ -61,7 +61,7 @@ export default function OffersPage() {
       <Row note={<span className="note-small">Filtres</span>}>
         <div className="filters" role="group" aria-label="Filtrer les offres">
           <div className="seg" role="radiogroup" aria-label="Source">
-            {(["all", "indeed", "wttj"] as const).map((s) => (
+            {(["all", "indeed", "wttj", "linkedin"] as const).map((s) => (
               <button key={s} type="button" role="radio" aria-checked={source === s} className={source === s ? "is-on" : ""} onClick={() => setSource(s)}>
                 {s === "all" ? "Toutes" : ACTORS[s].label}
               </button>
@@ -106,7 +106,7 @@ export default function OffersPage() {
                 {o.match && <em>{o.match.resume}</em>}
               </span>
               <span role="cell" className="col-loc">{o.location}</span>
-              <span role="cell" className="col-src"><span className={`src src--${o.source}`}>{o.source === "wttj" ? "WTTJ" : "Indeed"}</span></span>
+              <span role="cell" className="col-src"><span className={`src src--${o.source}`}>{o.source === "wttj" ? "WTTJ" : ACTORS[o.source].label}</span></span>
               <span role="cell" className="col-date num">{formatDate(o.publishedAt)}</span>
               <span role="cell" className="col-state">
                 {d?.applied ? <span className="stamp">Postulé</span> : d?.letter ? <span className="pill">Lettre prête</span> : <Icon name="arrow" />}

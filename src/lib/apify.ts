@@ -11,6 +11,11 @@ export const ACTORS: Record<SourceId, { actor: string; label: string; store: str
     label: "Welcome to the Jungle",
     store: "https://apify.com/clearpath/welcome-to-the-jungle-jobs-api",
   },
+  linkedin: {
+    actor: "valig/linkedin-jobs-scraper",
+    label: "LinkedIn",
+    store: "https://apify.com/valig/linkedin-jobs-scraper",
+  },
 };
 
 export class ApifyError extends Error {}
@@ -130,6 +135,73 @@ function normalizeWttj(item: any): Offer | null {
   };
 }
 
+/** Premier champ non vide parmi plusieurs noms possibles (l'actor ne publie pas son schéma de sortie). */
+function pick(item: any, ...keys: string[]): any {
+  for (const k of keys) {
+    const v = k.split(".").reduce((o, p) => (o == null ? undefined : o[p]), item);
+    if (v !== undefined && v !== null && v !== "") return v;
+  }
+  return undefined;
+}
+
+function toIsoDate(v: unknown): string | undefined {
+  if (v == null || v === "") return undefined;
+  const d = typeof v === "number" ? new Date(v < 1e12 ? v * 1000 : v) : new Date(String(v));
+  return Number.isNaN(d.getTime()) ? undefined : d.toISOString();
+}
+
+const LINKEDIN_CONTRACTS: Record<string, string> = {
+  "full-time": "CDI", full_time: "CDI", fulltime: "CDI", "temps plein": "CDI",
+  "part-time": "Temps partiel", part_time: "Temps partiel", contract: "CDD", temporary: "Intérim",
+  internship: "Stage", stage: "Stage", volunteer: "Bénévolat", other: "Autre",
+};
+const LINKEDIN_REMOTE: Record<string, string> = {
+  remote: "Full remote", "on-site": "Pas de télétravail", onsite: "Pas de télétravail", hybrid: "Télétravail partiel",
+};
+
+function normalizeLinkedin(item: any): Offer | null {
+  const id = pick(item, "id", "jobId", "job_id");
+  const title = pick(item, "title", "jobTitle", "job_title");
+  if (!id || !title) return null;
+  const url = pick(item, "url", "jobUrl", "link", "job_url") ?? `https://www.linkedin.com/jobs/view/${id}`;
+  const contractRaw = pick(item, "employmentType", "contractType", "jobType", "employment_type");
+  const remoteRaw = pick(item, "workType", "workplaceType", "remote", "workRemoteAllowed");
+  const salary =
+    typeof item.salary === "string"
+      ? item.salary
+      : formatSalary(
+          pick(item, "salary.min", "salaryMin", "baseSalary.min"),
+          pick(item, "salary.max", "salaryMax", "baseSalary.max"),
+          pick(item, "salary.currency", "salaryCurrency", "baseSalary.currencyCode"),
+          pick(item, "salary.period", "salaryPeriod", "baseSalary.unitOfWork"),
+        );
+  const company = pick(item, "companyName", "company.name", "employer.name", "company");
+  return {
+    id: `linkedin-${id}`,
+    source: "linkedin",
+    title: String(title),
+    company: typeof company === "string" ? company : "Entreprise non précisée",
+    location: String(pick(item, "location", "formattedLocation", "jobLocation", "place") ?? "Non précisé"),
+    url,
+    applyUrl: pick(item, "applyUrl", "applicationUrl", "apply_url", "externalApplyUrl") ?? url,
+    salary,
+    contract: contractRaw ? LINKEDIN_CONTRACTS[String(contractRaw).toLowerCase()] ?? String(contractRaw) : undefined,
+    remote:
+      remoteRaw === true ? "Full remote" : typeof remoteRaw === "string" ? LINKEDIN_REMOTE[remoteRaw.toLowerCase()] : undefined,
+    publishedAt: toIsoDate(pick(item, "postedAt", "postedDate", "publishedAt", "datePosted", "listedAt", "postedTime")),
+    description:
+      pick(item, "descriptionText", "description_text", "description.text") ??
+      htmlToText(pick(item, "descriptionHtml", "description_html", "description.html", "description")),
+    companyDescription: pick(item, "companyDescription", "company.description") || undefined,
+    companyWebsite: pick(item, "companyWebsite", "company.website") || undefined,
+  };
+}
+
+/** LinkedIn ne propose que 24 h, 7 jours et 30 jours : on prend la fenêtre qui couvre la demande, puis on filtre. */
+const LINKEDIN_DATE: Record<SearchCriteria["datePosted"], string> = {
+  "1": "r86400", "3": "r604800", "7": "r604800", "14": "r2592000", "30": "r2592000",
+};
+
 export async function searchSource(
   source: SourceId,
   criteria: SearchCriteria,
@@ -146,6 +218,26 @@ export async function searchSource(
     if (criteria.datePosted !== "30") input.datePosted = criteria.datePosted;
     const items = await runActorSync(token, ACTORS.indeed.actor, input, maxUsd);
     return items.map(normalizeIndeed).filter((o): o is Offer => o !== null);
+  }
+  if (source === "linkedin") {
+    const items = await runActorSync(
+      token,
+      ACTORS.linkedin.actor,
+      {
+        keywords: criteria.query,
+        location: criteria.location || "France",
+        datePosted: LINKEDIN_DATE[criteria.datePosted],
+        limit: criteria.limit,
+      },
+      maxUsd,
+    );
+    const since = Date.now() - Number(criteria.datePosted) * 86_400_000;
+    const seen = new Set<string>();
+    return items
+      .map(normalizeLinkedin)
+      .filter((o): o is Offer => o !== null)
+      .filter((o) => !o.publishedAt || Date.parse(o.publishedAt) >= since)
+      .filter((o) => (seen.has(o.id) ? false : (seen.add(o.id), true)));
   }
   const items = await runActorSync(
     token,

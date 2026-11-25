@@ -1,6 +1,6 @@
 # CV Matcher
 
-De votre CV PDF à une candidature prête : offres réelles (Indeed + Welcome to the Jungle via Apify), note /20, lettre de motivation adaptée à l'entreprise, lien direct pour postuler, préparation d'entretien.
+De votre CV PDF à une candidature prête : offres réelles (Indeed, Welcome to the Jungle et LinkedIn via Apify), note /20, lettre de motivation adaptée à l'entreprise, lien direct pour postuler, préparation d'entretien.
 
 ## Lancer
 
@@ -36,6 +36,7 @@ Les clés restent dans le navigateur (localStorage, ou session seulement si vous
 
 - Indeed : [`valig/indeed-jobs-scraper`](https://apify.com/valig/indeed-jobs-scraper)
 - Welcome to the Jungle : [`clearpath/welcome-to-the-jungle-jobs-api`](https://apify.com/clearpath/welcome-to-the-jungle-jobs-api)
+- LinkedIn : [`valig/linkedin-jobs-scraper`](https://apify.com/valig/linkedin-jobs-scraper)
 
 Appel via `run-sync-get-dataset-items`, avec `maxTotalChargeUsd` réglable par recherche.
 

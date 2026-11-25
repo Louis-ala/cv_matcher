@@ -33,7 +33,7 @@ export interface Profile {
   requetes: string[];
 }
 
-export type SourceId = "indeed" | "wttj";
+export type SourceId = "indeed" | "wttj" | "linkedin";
 
 export interface SearchCriteria {
   query: string;

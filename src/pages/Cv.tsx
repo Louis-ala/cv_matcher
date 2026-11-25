@@ -63,7 +63,7 @@ export default function CvPage() {
   };
 
   const set = <K extends keyof SearchCriteria>(k: K, v: SearchCriteria[K]) => criteria && setCriteria({ ...criteria, [k]: v });
-  const noSource = criteria && !criteria.sources.indeed && !criteria.sources.wttj;
+  const noSource = criteria && !Object.values(criteria.sources).some(Boolean);
 
   return (
     <div className="page cv">
@@ -171,7 +171,7 @@ export default function CvPage() {
                 <legend className="field__label">Sources</legend>
                 {(Object.keys(ACTORS) as SourceId[]).map((k) => (
                   <label key={k} className="toggle">
-                    <input type="checkbox" checked={criteria.sources[k]} onChange={(e) => set("sources", { ...criteria.sources, [k]: e.target.checked })} />
+                    <input type="checkbox" checked={!!criteria.sources[k]} onChange={(e) => set("sources", { ...criteria.sources, [k]: e.target.checked })} />
                     <span>{ACTORS[k].label}</span>
                   </label>
                 ))}
