@@ -1,0 +1,42 @@
+node_modules
+dist
+.impeccable/review
+.impeccable/mocks
+*.log
+.impeccable
+.claude
+.agents
+DESIGN.md
+
+# --- Secrets & environnement ---
+.env
+.env.*
+!.env.example
+*.local
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+secrets/
+secrets.*
+credentials*.json
+service-account*.json
+.npmrc
+.netrc
+
+# --- Données personnelles (CV, exports) ---
+*.pdf
+*.docx
+
+# --- Build / cache ---
+*.tsbuildinfo
+.vite
+coverage
+
+# --- Éditeur / OS ---
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db
